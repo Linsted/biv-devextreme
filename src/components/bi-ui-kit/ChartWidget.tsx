@@ -17,16 +17,17 @@ interface ChartWidgetProps {
   dataKey: string;
   type: ChartType;
   groupKey?: string;
+  onPointClick?: (point: any) => void;
 }
 
-export const ChartWidget = ({ title, data, dataKey, type, groupKey }: ChartWidgetProps) => {
+export const ChartWidget = ({ title, data, dataKey, type, groupKey, onPointClick }: ChartWidgetProps) => {
   const seriesName = dataKey.charAt(0).toUpperCase() + dataKey.slice(1);
 
   if (type === 'pie') {
     return (
       <div style={{ width: '100%', height: '100%' }}>
         <h3>{title}</h3>
-        <PieChart dataSource={data} palette="Violet" height={300}>
+        <PieChart dataSource={data} palette="Violet" height={300} onPointClick={onPointClick}>
           <PieSeries argumentField="name" valueField={dataKey} name={seriesName} />
           <PieLegend verticalAlignment="bottom" horizontalAlignment="center" />
           <PieTooltip enabled={true} customizeTooltip={arg => ({ text: `${arg.argumentText}: ${arg.valueText}` })} />
@@ -42,6 +43,7 @@ export const ChartWidget = ({ title, data, dataKey, type, groupKey }: ChartWidge
         dataSource={data}
         palette="Violet"
         height={300}
+        onPointClick={onPointClick}
       >
         <CommonSeriesSettings
           argumentField="name"

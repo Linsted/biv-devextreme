@@ -7,6 +7,23 @@ import type { ChartType } from "../components/bi-ui-kit/ChartWidget";
 
 export const MyDashboardPage = () => {
   const [timePeriod, setTimePeriod] = useState("LAST_30_DAYS");
+  // Drilldown state: null = top level, otherwise region name
+  const [drillRegion, setDrillRegion] = useState<string | null>(null);
+
+  // Drilldown data logic
+  const salesData = useVisualizationData({ metricId: "sales", timePeriod });
+  // For drilldown, filter by region and group by category
+  const drilldownData = drillRegion
+    ? (salesData.data || [])
+        .filter((d: any) => d.region === drillRegion)
+        .map((d: any) => ({ ...d, name: d.category }))
+    : (salesData.data || []).reduce((acc: any, cur: any) => {
+        const found = acc.find((a: any) => a.region === cur.region);
+        if (found) found.sales += cur.sales;
+        else
+          acc.push({ name: cur.region, region: cur.region, sales: cur.sales });
+        return acc;
+      }, []);
 
   // Chart configs for 12 charts
   const chartConfigs = [
@@ -156,6 +173,26 @@ export const MyDashboardPage = () => {
       <h1>Dashboard with Global Filters (DevExtreme)</h1>
       <TimePeriodSelector value={timePeriod} onChange={setTimePeriod} />
       <hr />
+      <div style={{ marginBottom: 24, maxWidth: 400 }}>
+        <ChartWidget
+          title={
+            drillRegion
+              ? `Sales by Category in ${drillRegion}`
+              : "Sales by Region (Drilldown)"
+          }
+          data={drilldownData}
+          dataKey="sales"
+          type="bar"
+          onPointClick={(point) => {
+            if (!drillRegion) setDrillRegion(point.target.originalArgument);
+          }}
+        />
+        {drillRegion && (
+          <button style={{ marginTop: 8 }} onClick={() => setDrillRegion(null)}>
+            Back to Regions
+          </button>
+        )}
+      </div>
       <div
         style={{
           display: "grid",
