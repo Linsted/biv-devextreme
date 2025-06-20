@@ -1,5 +1,4 @@
 // src/components/filters/TimePeriodSelector.tsx
-import React from "react";
 
 interface TimePeriodSelectorProps {
   value: string;
