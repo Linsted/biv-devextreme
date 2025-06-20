@@ -1,9 +1,9 @@
 // src/pages/MyDashboardPage.tsx
 import { useState } from "react";
+import type { ChartType } from "../components/bi-ui-kit/ChartWidget";
 import { ChartWidget } from "../components/bi-ui-kit/ChartWidget";
 import { TimePeriodSelector } from "../components/filters/TimePeriodSelector";
 import { useVisualizationData } from "../hooks/data-adapters/useVisualizationData";
-import type { ChartType } from "../components/bi-ui-kit/ChartWidget";
 
 export const MyDashboardPage = () => {
   const [timePeriod, setTimePeriod] = useState("LAST_30_DAYS");
@@ -168,6 +168,22 @@ export const MyDashboardPage = () => {
     chartData11,
   ];
 
+  // Define unique palettes for each chart
+  const chartPalettes = [
+    ["#1976d2", "#388e3c", "#fbc02d", "#d32f2f"], // multi-color for Sales (Pie)
+    ["#388e3c", "#a5d6a7"], // green
+    ["#fbc02d", "#fff59d"], // yellow
+    ["#d32f2f", "#ef9a9a"], // red
+    ["#7b1fa2", "#ce93d8"], // purple
+    ["#0288d1", "#4dd0e1"], // light blue
+    ["#c2185b", "#f06292"], // pink
+    ["#ffa000", "#ffd54f"], // orange
+    ["#388e3c", "#c5e1a5"], // green alt
+    ["#455a64", "#b0bec5"], // blue grey
+    ["#8bc34a", "#dcedc8"], // light green
+    ["#f44336", "#ffccbc"], // bright red
+  ];
+
   return (
     <div style={{ padding: "20px" }}>
       <h1>Dashboard with Global Filters (DevExtreme)</h1>
@@ -212,6 +228,11 @@ export const MyDashboardPage = () => {
               dataKey={cfg.dataKey}
               type={cfg.type}
               groupKey={cfg.groupKey}
+              palette={
+                cfg.title === "Sales (Pie)"
+                  ? chartPalettes[0]
+                  : chartPalettes[idx % chartPalettes.length]
+              }
             />
           </div>
         ))}
