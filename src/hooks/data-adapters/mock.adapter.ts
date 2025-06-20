@@ -42,16 +42,54 @@ const pieData = [
   { name: 'Product C', value: 20 },
   { name: 'Product D', value: 10 },
 ];
+const salesData30 = Array.from({ length: 30 }, (_, i) => ({
+  name: `Day ${i + 1}`,
+  sales: 4000 + Math.round(Math.random() * 4000),
+  region: i % 2 === 0 ? 'North' : 'South',
+  category: i % 3 === 0 ? 'A' : 'B',
+}));
+const usersData30 = Array.from({ length: 30 }, (_, i) => ({
+  name: `Day ${i + 1}`,
+  users: 100 + Math.round(Math.random() * 150),
+  region: i % 2 === 0 ? 'North' : 'South',
+  category: i % 3 === 0 ? 'A' : 'B',
+}));
+const profitData30 = Array.from({ length: 30 }, (_, i) => ({
+  name: `Day ${i + 1}`,
+  profit: 800 + Math.round(Math.random() * 1200),
+  region: i % 2 === 0 ? 'North' : 'South',
+  category: i % 3 === 0 ? 'A' : 'B',
+}));
+const expensesData30 = Array.from({ length: 30 }, (_, i) => ({
+  name: `Day ${i + 1}`,
+  expenses: 400 + Math.round(Math.random() * 800),
+  region: i % 2 === 0 ? 'North' : 'South',
+  category: i % 3 === 0 ? 'A' : 'B',
+}));
 
 export const fetchMockData = async (config: VisualizationConfig): Promise<any[]> => {
   console.log('Fetching mock data with config:', config);
   await new Promise(resolve => setTimeout(resolve, 500));
   switch (config.metricId) {
-    case 'sales': return config.timePeriod === 'LAST_3_DAYS' ? salesData.slice(-3) : salesData;
-    case 'users': return config.timePeriod === 'LAST_3_DAYS' ? usersData.slice(-3) : usersData;
-    case 'profit': return config.timePeriod === 'LAST_3_DAYS' ? profitData.slice(-3) : profitData;
-    case 'expenses': return config.timePeriod === 'LAST_3_DAYS' ? expensesData.slice(-3) : expensesData;
-    case 'pie': return pieData;
-    default: return salesData;
+    case 'sales':
+      if (config.timePeriod === 'LAST_3_DAYS') return salesData.slice(-3);
+      if (config.timePeriod === 'LAST_30_DAYS') return salesData30;
+      return salesData;
+    case 'users':
+      if (config.timePeriod === 'LAST_3_DAYS') return usersData.slice(-3);
+      if (config.timePeriod === 'LAST_30_DAYS') return usersData30;
+      return usersData;
+    case 'profit':
+      if (config.timePeriod === 'LAST_3_DAYS') return profitData.slice(-3);
+      if (config.timePeriod === 'LAST_30_DAYS') return profitData30;
+      return profitData;
+    case 'expenses':
+      if (config.timePeriod === 'LAST_3_DAYS') return expensesData.slice(-3);
+      if (config.timePeriod === 'LAST_30_DAYS') return expensesData30;
+      return expensesData;
+    case 'pie':
+      return pieData;
+    default:
+      return salesData;
   }
 };
